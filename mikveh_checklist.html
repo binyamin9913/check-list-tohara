@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>מקווה ✓</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1b2a;
+    --surface: #112236;
+    --surface2: #16304d;
+    --accent: #4fc3f7;
+    --accent2: #81d4fa;
+    --gold: #ffd54f;
+    --text: #e8f4f8;
+    --text-dim: #7bafc9;
+    --check-bg: #1a3a5c;
+    --check-done: #1b5e3b;
+    --check-done-border: #43a047;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 0 120px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 55% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 45%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 65% 75%, rgba(255,255,255,0.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(180deg, #0a1520 0%, rgba(13,27,42,0.97) 100%);
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid rgba(79,195,247,0.15);
+    backdrop-filter: blur(8px);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .header-icon {
+    font-size: 32px;
+    line-height: 1;
+    filter: drop-shadow(0 0 8px rgba(79,195,247,0.5));
+  }
+
+  .header-title {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--accent2), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    width: 0%;
+    box-shadow: 0 0 8px rgba(79,195,247,0.6);
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    text-align: left;
+    direction: ltr;
+  }
+
+  .section {
+    padding: 18px 16px 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    padding-right: 10px;
+    border-right: 3px solid var(--gold);
+    opacity: 0.9;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid rgba(79,195,247,0.12);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(79,195,247,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .item:active { transform: scale(0.98); }
+
+  .item.done {
+    background: var(--check-done);
+    border-color: var(--check-done-border);
+  }
+
+  .item.done::before { opacity: 1; }
+
+  .checkbox {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    border-radius: 8px;
+    border: 2px solid rgba(79,195,247,0.4);
+    background: var(--check-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    font-size: 15px;
+  }
+
+  .item.done .checkbox {
+    background: var(--check-done-border);
+    border-color: var(--check-done-border);
+    box-shadow: 0 0 10px rgba(67,160,71,0.5);
+    transform: scale(1.1);
+  }
+
+  .checkmark {
+    opacity: 0;
+    transform: scale(0) rotate(-45deg);
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    color: white;
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  .item.done .checkmark {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  .item-content { flex: 1; }
+
+  .item-text {
+    font-size: 15.5px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+    transition: color 0.25s;
+  }
+
+  .item.done .item-text {
+    color: #a5d6a7;
+  }
+
+  .item-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    transition: color 0.25s;
+  }
+
+  .item.done .item-note { color: #66bb6a88; }
+
+  /* Completion overlay */
+  .complete-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at center, rgba(27,94,59,0.97) 0%, rgba(13,27,42,0.99) 70%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .complete-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .complete-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: bounceIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    filter: drop-shadow(0 0 30px rgba(79,195,247,0.7));
+  }
+
+  @keyframes bounceIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .complete-title {
+    font-size: 36px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #81d4fa, #ffd54f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .complete-sub {
+    font-size: 18px;
+    color: #a5d6a7;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .complete-note {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 40px;
+  }
+
+  .btn-dismiss {
+    background: linear-gradient(135deg, var(--accent), #1976d2);
+    border: none;
+    border-radius: 999px;
+    color: white;
+    font-family: 'Heebo', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 40px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(79,195,247,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-dismiss:active { transform: scale(0.96); }
+
+  /* Reset button */
+  .reset-btn {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    background: rgba(17,34,54,0.9);
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 999px;
+    color: var(--text-dim);
+    font-family: 'Heebo', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 28px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .reset-btn:active { background: rgba(30,60,90,0.95); color: var(--text); }
+
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99;
+    font-size: 20px;
+    animation: floatUp 1s ease forwards;
+  }
+
+  @keyframes floatUp {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(-80px) scale(0.5); }
+  }
+
+  .water-divider {
+    text-align: center;
+    color: rgba(79,195,247,0.3);
+    font-size: 22px;
+    letter-spacing: 4px;
+    padding: 8px 0 4px;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <span class="header-icon">🌊</span>
+    <span class="header-title">צ'קליסט מקווה</span>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 / 0</div>
+</div>
+
+<div id="listContainer"></div>
+
+<button class="reset-btn" id="resetBtn">↺ איפוס רשימה</button>
+
+<div class="complete-overlay" id="completeOverlay">
+  <div class="complete-icon">✅</div>
+  <div class="complete-title">הכול הושלם!</div>
+  <div class="complete-sub">מוכן למקווה 🌊</div>
+  <div class="complete-note">כל הפריטים סומנו בהצלחה</div>
+  <button class="btn-dismiss" id="dismissBtn">סגור</button>
+</div>
+
+<script>
+const SECTIONS = [
+  {
+    title: "חפיפה – לפני המקווה",
+    items: [
+      { id: "s1", text: "חפיפת ראש מלאה", note: "כל השיער נקי ורטוב עד הקצות" },
+      { id: "s2", text: "ניקוי ציפורניים", note: "קצרות, נקיות, ללא לק" },
+      { id: "s3", text: "פתיחת קשרים ואלסטיקים", note: "אין שום דבר שמפריד" },
+      { id: "s4", text: "ניקוי פיו ושיניים", note: "צחצוח ובדיקה בין השיניים" },
+      { id: "s5", text: "ניקוי פה האוזניים", note: "עם מקל אוזניים בעדינות" },
+      { id: "s6", text: "ניקוי הטבור", note: "עם מטלית לחה" },
+      { id: "s7", text: "הסרת תכשיטים", note: "טבעות, עגילים, שעון, צמידים" },
+      { id: "s8", text: "פירוק עדשות מגע", note: "אם יש" },
+      { id: "s9", text: "בדיקת כל הגוף", note: "אין דבר חוצץ בשום מקום" },
+    ]
+  },
+  {
+    title: "דברים לקחת למקווה",
+    items: [
+      { id: "t1", text: "מגבת" },
+      { id: "t2", text: "שמפו / סבון" },
+      { id: "t3", text: "מברשת שיניים ומשחה" },
+      { id: "t4", text: "מסרק / מברשת שיער" },
+      { id: "t5", text: "כיסוי ראש לאחר הטבילה" },
+      { id: "t6", text: "בגדים להחלפה" },
+      { id: "t7", text: "כסף/אמצעי תשלום" },
+      { id: "t8", text: "סנדלים/כפכפים" },
+    ]
+  }
+];
+
+const STORAGE_KEY = 'mikveh_checklist';
+const DATE_KEY = 'mikveh_checklist_date';
+
+function getTodayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function loadState() {
+  const savedDate = localStorage.getItem(DATE_KEY);
+  const today = getTodayStr();
+  if (savedDate !== today) {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(DATE_KEY, today);
+    return {};
+  }
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  } catch { return {}; }
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.setItem(DATE_KEY, getTodayStr());
+}
+
+let state = loadState();
+let allIds = [];
+SECTIONS.forEach(s => s.items.forEach(i => allIds.push(i.id)));
+
+function getChecked() {
+  return allIds.filter(id => state[id]);
+}
+
+function updateProgress() {
+  const checked = getChecked().length;
+  const total = allIds.length;
+  const pct = total ? (checked / total) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = checked + ' / ' + total + ' סומנו';
+}
+
+function checkComplete() {
+  if (getChecked().length === allIds.length) {
+    setTimeout(() => {
+      document.getElementById('completeOverlay').classList.add('show');
+    }, 400);
+  }
+}
+
+function spawnSparkle(x, y) {
+  const emojis = ['✨','⭐','💧','🌟','💫'];
+  const el = document.createElement('div');
+  el.className = 'sparkle';
+  el.style.left = (x - 15) + 'px';
+  el.style.top = (y - 15) + 'px';
+  el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+function toggleItem(id, event) {
+  state[id] = !state[id];
+  saveState(state);
+  const el = document.getElementById('item-' + id);
+  if (state[id]) {
+    el.classList.add('done');
+    if (event) {
+      const rect = el.getBoundingClientRect();
+      spawnSparkle(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    }
+  } else {
+    el.classList.remove('done');
+  }
+  updateProgress();
+  checkComplete();
+}
+
+function render() {
+  const container = document.getElementById('listContainer');
+  container.innerHTML = '';
+
+  SECTIONS.forEach((section, si) => {
+    const secDiv = document.createElement('div');
+    secDiv.className = 'section';
+
+    const title = document.createElement('div');
+    title.className = 'section-title';
+    title.textContent = section.title;
+    secDiv.appendChild(title);
+
+    section.items.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'item' + (state[item.id] ? ' done' : '');
+      el.id = 'item-' + item.id;
+      el.innerHTML = `
+        <div class="checkbox">
+          <span class="checkmark">✓</span>
+        </div>
+        <div class="item-content">
+          <div class="item-text">${item.text}</div>
+          ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+        </div>
+      `;
+      el.addEventListener('click', (e) => toggleItem(item.id, e));
+      secDiv.appendChild(el);
+    });
+
+    container.appendChild(secDiv);
+
+    if (si < SECTIONS.length - 1) {
+      const div = document.createElement('div');
+      div.className = 'water-divider';
+      div.textContent = '~ ~ ~';
+      container.appendChild(div);
+    }
+  });
+
+  updateProgress();
+}
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('לאפס את כל הסימונים?')) {
+    state = {};
+    saveState(state);
+    render();
+    document.getElementById('completeOverlay').classList.remove('show');
+  }
+});
+
+document.getElementById('dismissBtn').addEventListener('click', () => {
+  document.getElementById('completeOverlay').classList.remove('show');
+});
+
+render();
+if (getChecked().length === allIds.length && allIds.length > 0) {
+  // don't auto-show on load even if all checked
+}
+</script>
+</body>
+</html>
